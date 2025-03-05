@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Parente;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreParenteRequest;
+use App\Http\Requests\UpdateParenteRequest;
+use App\Http\Resources\ParenteResource;
+use DateTime;
 
-class ParenteController extends Controller
+class StudentParentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +21,14 @@ class ParenteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreParenteRequest $request)
     {
-        //
+        // dd($request) ;
+        $formFileds = $request->validated() ; 
+        // $formFileds["last_Login_date"] =( new DateTime())->format('Y-m-d') ;
+        $parente= Parente::create($formFileds) ;
+        // dd($formFileds) ;
+        return new ParenteResource($parente) ;
     }
 
     /**
@@ -34,7 +42,7 @@ class ParenteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Parente $parente)
+    public function update(UpdateParenteRequest $request, Parente $parente)
     {
         //
     }

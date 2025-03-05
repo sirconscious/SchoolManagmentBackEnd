@@ -32,7 +32,7 @@ class AuthenticatedSessionController extends Controller
 
         return response()->json([
             'user' => $user , 
-            'token' =>$user->createToken("api" , ['admin'])->plainTextToken
+            'token' =>$user->createToken("api" , [$user->getRoleAttribute()])->plainTextToken
         ]);
     }
 
@@ -41,6 +41,17 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): Response
     {
+        $guards = ['web' ,"admin" , "teacher" ] ;
+        $user = null ;
+        foreach($guards as $guard){
+            $currentGuard = Auth::guard($guard) ;
+            if ($currentGuard->check()) {
+                $user = $currentGuard->user();
+                break ;
+            }
+           
+        }
+        $user->tokens()->delete();
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
